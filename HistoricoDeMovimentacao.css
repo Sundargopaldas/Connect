@@ -1,0 +1,101 @@
+
+      /* Reset e estilos gerais */
+/* Reset e estilos gerais */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Reset e estilos gerais */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 10px;
+    background-color: #7bcef5;
+    max-width: 100vw;
+    overflow-x: hidden;
+}
+
+.title{
+    text-align: center;
+}
+
+/* Tabela responsiva */
+.table-wrapper {
+    width: 100%;
+    overflow: hidden;
+    
+   
+
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-size: 0.9rem;
+}
+
+th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+/* Ajuste específico para a coluna combinada */
+.data-cliente {
+    min-width: 200px;
+}
+
+/* Ajustes para colunas específicas */
+.col-produto { width: 15%; }
+.col-id { width: 10%; }
+.col-descricao { width: 20%; }
+.col-img { width: 60px; }
+.col-numero { width: 8%; }
+.col-status { width: 10%; }
+.col-acao { width: 100px; }
+
+.btn-red {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.btn-red:hover {
+    background-color: #c82333;
+}
+
+td img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+/* Media queries */
+@media screen and (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    th, td {
+        padding: 6px 8px;
+        font-size: 0.85rem;
+    }
+}

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Movimentações</title>
+    <link rel="stylesheet" href="HistoricoDeMovimentacao.css">
+</head>
+<body>
+     <h1 class="title">Histórico De Movimentação</h1>
+     <a href="paginadadosdeprodutos.html"><button class="btn-red">voltar</button></a>
+    <div class="table-wrapper">
+    <table>
+        <thead>
+            <tr>
+                <th class="data-cliente">Data/Cliente</th>
+                <th class="col-produto">Produto</th>
+                <th class="col-id">ID</th>
+                <th class="col-descricao">Descrição</th>
+                <th class="col-img">Imagem</th>
+                <th class="col-numero">Entrada</th>
+                <th class="col-numero">Saída</th>
+                <th class="col-numero">Estoque</th>
+                <th class="col-status">Status</th>
+                <th class="col-acao">Ação</th>
+            </tr>
+        </thead>
+        <tbody id="historicoTableBody">
+            <!-- Conteúdo dinâmico aqui -->
+        </tbody>
+    </table>
+</div>
+    <script src="HistoricoDeMovimentacao.js"></script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Clientes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Cadastro de Clientes</h1>
+        <form id="clienteForm">
+            <div>
+                <label for="logoCliente">Logo do Cliente:</label>
+                <input type="file" id="logoCliente" accept="image/*">
+            </div>
+            <div>
+                <label for="idCliente">ID:</label>
+                <input type="text" id="idCliente" required>
+            </div>
+            <div>
+                <label for="nomeCliente"> Cliente:</label>
+                <input type="text" id="nomeCliente" required>
+            </div>
+            <button type="submit">Adicionar Cliente</button>
+        </form>
+      
+        <div id="clientesList"></div>
+         
+        
+    </div>
+    <script src="CadastroDeClientes.js"></script>
+</body>
+</html>
