@@ -2,13 +2,27 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const mysql = require('mysql2');
+
 const app = express();
 
+// Middlewares principais
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Configuração do CORS
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Resto do seu código continua aqui...
+// Configuração da conexão com pool
 const pool = mysql.createPool({
-    host: 'srv1075.hstgr.io',
-    user: 'u426792035_usuarioConnect',  // seu usuário
-    password: 'Sundar2024',
-    database: 'u426792035_bancoConnect',
+    host: '127.0.0.1',
+    user: 'root',
+    password: 'sundar',
+    database: 'user_authentication',
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
@@ -25,9 +39,12 @@ pool.getConnection((err, connection) => {
 });
 
 // Middlewares
-app.use(cors());
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true }));
+// Substitua a linha app.use(cors()) por:
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // NOVA ADIÇÃO: Configuração para servir arquivos estáticos
 // NOVA ADIÇÃO: Configuração para servir arquivos estáticos
