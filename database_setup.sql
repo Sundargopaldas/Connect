@@ -37,7 +37,10 @@ CREATE TABLE IF NOT EXISTS products (
     FOREIGN KEY (client_id) REFERENCES clients(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Criar a tabela de histórico de produtos
+-- Modificar a tabela de histórico de produtos
+DROP TABLE IF EXISTS product_history;
+
+-- Criar a tabela de movimentações com o novo campo
 CREATE TABLE IF NOT EXISTS product_history (
     id INT AUTO_INCREMENT PRIMARY KEY,
     product_id VARCHAR(50),
@@ -45,6 +48,7 @@ CREATE TABLE IF NOT EXISTS product_history (
     action_type VARCHAR(50),
     old_stock INT,
     new_stock INT,
+    observacoes TEXT,
     action_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (client_id) REFERENCES clients(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

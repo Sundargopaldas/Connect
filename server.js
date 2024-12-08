@@ -2,52 +2,38 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const mysql = require('mysql2');
-
+const https = require('https');
+const fs = require('fs');
 const app = express();
 
-// Middlewares principais
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-// Configuração do CORS
+
+
 app.use(cors({
-    origin: '*',
+    origin: [
+        'http://connectprint.poa.br:21058',
+        'http://connectprint.poa.br',
+        'http://localhost:3001'
+    ],
+    credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Accept']
 }));
-
-// Resto do seu código continua aqui...
-// Configuração da conexão com pool
-const pool = mysql.createPool({
-    host: '127.0.0.1',
-    user: 'root',
-    password: 'sundar',
-    database: 'user_authentication',
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
-});
-
-// Teste da conexão com o banco
-pool.getConnection((err, connection) => {
-    if (err) {
-        console.error('Erro ao conectar ao banco:', err);
-        return;
-    }
-    console.log('Conectado ao banco de dados com sucesso!');
-    connection.release();
-});
 
 // Middlewares
-// Substitua a linha app.use(cors()) por:
-app.use(cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true }));
 
-// NOVA ADIÇÃO: Configuração para servir arquivos estáticos
-// NOVA ADIÇÃO: Configuração para servir arquivos estáticos
+// Middleware para logging
+app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+    if (req.body) {
+        console.log('Body:', req.body);
+    }
+    next();
+});
+
+// Configuração para servir arquivos estáticos
 app.use(express.static(path.join(__dirname, 'public'), {
     setHeaders: (res, path, stat) => {
         if (path.endsWith('.css')) {
@@ -57,29 +43,39 @@ app.use(express.static(path.join(__dirname, 'public'), {
         }
     }
 }));
-    
 
-// NOVA ADIÇÃO: Rota para servir arquivos HTML
-// NOVA ADIÇÃO: Rota para servir arquivos HTML
-app.get('/*.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', req.path));
+// Configuração do banco de dados
+const pool = mysql.createPool({
+    host: 'mysql.connectprint.poa.br',
+    user: 'connectprint',
+    password: 'Sundar2024',
+    database: 'connectprint',
+    port: 3306,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 });
 
-
-// NOVA ADIÇÃO: Rota para a página inicial
-// Rota para a página inicial - redirecionando para login
-app.get('/', (req, res) => {
-    res.redirect('index.html');
+// Verificação inicial da conexão com o banco
+pool.getConnection((err, connection) => {
+    if (err) {
+        console.error('Erro de conexão com banco:', err);
+        console.error('Detalhes do erro:');
+        console.error('Código:', err.code);
+        console.error('Mensagem:', err.message);
+        console.error('Host:', pool.config.connectionConfig.host);
+        console.error('Usuário:', pool.config.connectionConfig.user);
+        console.error('Banco:', pool.config.connectionConfig.database);
+        return;
+    }
+    console.log('Conexão com banco estabelecida com sucesso!');
+    connection.release();
 });
 
-
-// Middleware para logging
-app.use((req, res, next) => {
-    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
-    next();
-});
+// ROTAS API
 // Login
 app.post('/api/login', (req, res) => {
+    console.log('Rota /api/login acionada');
     console.log('Tentativa de login:', req.body);
     const { username, email, password } = req.body;
 
@@ -115,7 +111,6 @@ app.post('/api/login', (req, res) => {
         }
     });
 });
-
 // Signup/Cadastro
 app.post('/api/signup', (req, res) => {
     console.log('Tentativa de cadastro:', req.body);
@@ -125,7 +120,6 @@ app.post('/api/signup', (req, res) => {
         return res.status(400).json({ message: 'Todos os campos são obrigatórios' });
     }
 
-    // Primeiro verifica se o usuário já existe
     const checkQuery = 'SELECT * FROM users WHERE email = ? OR username = ?';
     pool.query(checkQuery, [email, username], (error, results) => {
         if (error) {
@@ -137,7 +131,6 @@ app.post('/api/signup', (req, res) => {
             return res.status(400).json({ message: 'Usuário ou email já existe' });
         }
 
-        // Se não existe, insere o novo usuário
         const insertQuery = 'INSERT INTO users (username, email, password) VALUES (?, ?, ?)';
         pool.query(insertQuery, [username, email, password], (error, results) => {
             if (error) {
@@ -156,85 +149,8 @@ app.post('/api/signup', (req, res) => {
         });
     });
 });
-// Login
-app.post('/api/login', (req, res) => {
-    console.log('Tentativa de login:', req.body);
-    const { username, email, password } = req.body;
 
-    if (!username || !email || !password) {
-        return res.status(400).json({ message: 'Todos os campos são obrigatórios' });
-    }
-
-    const query = 'SELECT * FROM users WHERE email = ? AND username = ?';
-    
-    pool.query(query, [email, username], (error, results) => {
-        if (error) {
-            console.error('Erro na consulta:', error);
-            return res.status(500).json({ message: 'Erro interno do servidor' });
-        }
-        
-        if (results.length === 0) {
-            return res.status(404).json({ message: 'Usuário não encontrado' });
-        }
-        
-        const user = results[0];
-        
-        if (user.password === password) {
-            res.json({ 
-                message: 'Login bem-sucedido',
-                user: {
-                    id: user.id,
-                    username: user.username,
-                    email: user.email
-                }
-            });
-        } else {
-            res.status(401).json({ message: 'Senha incorreta' });
-        }
-    });
-});
-
-// Signup/Cadastro
-app.post('/api/signup', (req, res) => {
-    console.log('Tentativa de cadastro:', req.body);
-    const { username, email, password } = req.body;
-
-    if (!username || !email || !password) {
-        return res.status(400).json({ message: 'Todos os campos são obrigatórios' });
-    }
-
-    // Primeiro verifica se o usuário já existe
-    const checkQuery = 'SELECT * FROM users WHERE email = ? OR username = ?';
-    pool.query(checkQuery, [email, username], (error, results) => {
-        if (error) {
-            console.error('Erro na verificação:', error);
-            return res.status(500).json({ message: 'Erro interno do servidor' });
-        }
-
-        if (results.length > 0) {
-            return res.status(400).json({ message: 'Usuário ou email já existe' });
-        }
-
-        // Se não existe, insere o novo usuário
-        const insertQuery = 'INSERT INTO users (username, email, password) VALUES (?, ?, ?)';
-        pool.query(insertQuery, [username, email, password], (error, results) => {
-            if (error) {
-                console.error('Erro no cadastro:', error);
-                return res.status(500).json({ message: 'Erro ao cadastrar usuário' });
-            }
-
-            res.status(201).json({ 
-                message: 'Usuário cadastrado com sucesso',
-                user: {
-                    id: results.insertId,
-                    username,
-                    email
-                }
-            });
-        });
-    });
-});
-// rota para cadastro de clientes
+// Rotas de Clientes
 app.post('/api/clients', async (req, res) => {
     console.log('Recebendo dados do cliente:', req.body);
     const { id, nome, logo } = req.body;
@@ -256,8 +172,6 @@ app.post('/api/clients', async (req, res) => {
         res.status(500).json({ message: 'Erro ao cadastrar cliente' });
     }
 });
-
-// Rota para listar todos os clientes
 app.get('/api/clients', async (req, res) => {
     try {
         const [rows] = await pool.promise().query('SELECT * FROM clients');
@@ -268,12 +182,10 @@ app.get('/api/clients', async (req, res) => {
     }
 });
 
-// Rota para deletar um cliente
 app.delete('/api/clients/:id', async (req, res) => {
     const clientId = req.params.id;
 
     try {
-        // Primeiro, verifica se existem produtos relacionados
         const [products] = await pool.promise().query(
             'SELECT * FROM products WHERE client_id = ?',
             [clientId]
@@ -285,7 +197,6 @@ app.delete('/api/clients/:id', async (req, res) => {
             });
         }
 
-        // Se não houver produtos, deleta o cliente
         const [result] = await pool.promise().query(
             'DELETE FROM clients WHERE id = ?',
             [clientId]
@@ -301,7 +212,8 @@ app.delete('/api/clients/:id', async (req, res) => {
         res.status(500).json({ message: 'Erro ao deletar cliente' });
     }
 });
-// Rotas para Produtos
+
+// Rotas de Produtos
 app.post('/api/products', async (req, res) => {
     console.log('Recebendo dados do produto:', req.body);
     const { id, client_id, name, description, stock, min_stock, status, image } = req.body;
@@ -311,7 +223,6 @@ app.post('/api/products', async (req, res) => {
     }
 
     try {
-        // Verifica se o cliente existe
         const [client] = await pool.promise().query(
             'SELECT id FROM clients WHERE id = ?',
             [client_id]
@@ -338,7 +249,6 @@ app.post('/api/products', async (req, res) => {
             image || 'placeholder.png'
         ]);
 
-        // Registra no histórico
         await pool.promise().query(
             'INSERT INTO product_history (product_id, client_id, action_type, old_stock, new_stock) VALUES (?, ?, ?, ?, ?)',
             [id, client_id, 'CRIADO', 0, stock || 0]
@@ -353,7 +263,6 @@ app.post('/api/products', async (req, res) => {
         res.status(500).json({ message: 'Erro ao cadastrar produto: ' + error.message });
     }
 });
-
 app.get('/api/products', async (req, res) => {
     try {
         const query = `
@@ -370,41 +279,7 @@ app.get('/api/products', async (req, res) => {
         res.status(500).json({ message: 'Erro ao buscar produtos' });
     }
 });
-// Remover produto
-app.delete('/api/products/:id', async (req, res) => {
-    const productId = req.params.id;
 
-    try {
-        // Primeiro, registra no histórico
-        const [product] = await pool.promise().query(
-            'SELECT * FROM products WHERE id = ?',
-            [productId]
-        );
-
-        if (product.length === 0) {
-            return res.status(404).json({ message: 'Produto não encontrado' });
-        }
-
-        // Registra a remoção no histórico
-        await pool.promise().query(
-            'INSERT INTO product_history (product_id, client_id, action_type, old_stock, new_stock) VALUES (?, ?, ?, ?, ?)',
-            [productId, product[0].client_id, 'REMOVIDO', product[0].stock, 0]
-        );
-
-        // Remove o produto
-        await pool.promise().query(
-            'DELETE FROM products WHERE id = ?',
-            [productId]
-        );
-
-        res.json({ message: 'Produto removido com sucesso' });
-    } catch (error) {
-        console.error('Erro ao remover produto:', error);
-        res.status(500).json({ message: 'Erro ao remover produto' });
-    }
-});
-
-// Buscar produtos por cliente
 app.get('/api/products/client/:clientId', async (req, res) => {
     try {
         const [produtos] = await pool.promise().query(
@@ -418,18 +293,173 @@ app.get('/api/products/client/:clientId', async (req, res) => {
     }
 });
 
-// Rotas para Movimentação
-// Buscar histórico de movimentações
+app.get('/api/products/:id', async (req, res) => {
+    try {
+        const [produto] = await pool.promise().query(
+            'SELECT * FROM products WHERE id = ?',
+            [req.params.id]
+        );
+
+        if (produto.length === 0) {
+            return res.status(404).json({ message: 'Produto não encontrado' });
+        }
+
+        res.json(produto[0]);
+    } catch (error) {
+        console.error('Erro ao buscar produto:', error);
+        res.status(500).json({ message: 'Erro ao buscar produto' });
+    }
+});
+
+// Adicione esta rota após app.get('/api/products/client/:clientId' ...
+app.delete('/api/products/:id', async (req, res) => {
+    const productId = req.params.id;
+    const connection = await pool.promise().getConnection();
+
+    try {
+        await connection.beginTransaction();
+        
+        // 1. Primeiro verifica se o produto existe
+        const [product] = await connection.query(
+            'SELECT * FROM products WHERE id = ?',
+            [productId]
+        );
+
+        if (product.length === 0) {
+            await connection.rollback();
+            connection.release();
+            return res.status(404).json({ message: 'Produto não encontrado' });
+        }
+
+        // 2. Remove o histórico primeiro
+        await connection.query(
+            'DELETE FROM product_history WHERE product_id = ?',
+            [productId]
+        );
+
+        console.log('Histórico removido para produto:', productId);
+
+        // 3. Depois remove o produto
+        await connection.query(
+            'DELETE FROM products WHERE id = ?',
+            [productId]
+        );
+
+        console.log('Produto removido:', productId);
+
+        await connection.commit();
+        connection.release();
+
+        res.json({ 
+            success: true,
+            message: 'Produto removido com sucesso'
+        });
+
+    } catch (error) {
+        console.error('Erro ao remover produto:', error);
+        await connection.rollback();
+        connection.release();
+        res.status(500).json({ 
+            message: 'Erro ao remover produto',
+            error: error.message 
+        });
+    }
+});
+app.put('/api/products/:id', async (req, res) => {
+   const productId = req.params.id;
+   const { name, description, stock, min_stock, image, client_id } = req.body;
+
+   try {
+       const [product] = await pool.promise().query(
+           'SELECT * FROM products WHERE id = ?',
+           [productId]
+       );
+
+       if (product.length === 0) {
+           return res.status(404).json({ message: 'Produto não encontrado' });
+       }
+
+       await pool.promise().query(
+           'UPDATE products SET name = ?, description = ?, stock = ?, min_stock = ?, image = ?, status = ? WHERE id = ?',
+           [
+               name,
+               description,
+               stock,
+               min_stock,
+               image,
+               stock <= min_stock ? 'Baixo' : 'Normal',
+               productId
+           ]
+       );
+
+       res.json({ message: 'Produto atualizado com sucesso' });
+   } catch (error) {
+       console.error('Erro ao atualizar produto:', error);
+       res.status(500).json({ message: 'Erro ao atualizar produto' });
+   }
+});
+
+// Rotas de Movimentação
+app.post('/api/movimentacao/registrar', async (req, res) => {
+    const { client_id, product_id, entrada, saida, observacao, usuario } = req.body;
+    
+    try {
+        const [produto] = await pool.promise().query(
+            'SELECT * FROM products WHERE id = ? AND client_id = ?',
+            [product_id, client_id]
+        );
+
+        if (produto.length === 0) {
+            return res.status(404).json({ message: 'Produto não encontrado' });
+        }
+
+        const estoqueAtual = produto[0].stock;
+        const novoEstoque = estoqueAtual + entrada - saida;
+        const action_type = entrada > 0 ? 'ENTRADA' : 'SAIDA';
+
+        const query = `
+            INSERT INTO product_history 
+            (product_id, client_id, action_type, old_stock, new_stock, observacao, usuario) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        `;
+
+        await pool.promise().query(query, [
+            product_id, 
+            client_id, 
+            action_type, 
+            estoqueAtual, 
+            novoEstoque,
+            observacao,
+            usuario
+        ]);
+
+        await pool.promise().query(
+            'UPDATE products SET stock = ?, status = ? WHERE id = ?',
+            [
+                novoEstoque,
+                novoEstoque <= produto[0].min_stock ? 'Baixo' : 'Normal',
+                product_id
+            ]
+        );
+
+        res.json({ message: 'Movimentação registrada com sucesso', novoEstoque });
+    } catch (error) {
+        console.error('Erro:', error);
+        res.status(500).json({ message: 'Erro ao registrar movimentação: ' + error.message });
+    }
+});
+
+// Alterar rota do histórico para incluir novos campos
 app.get('/api/movimentacao/historico', async (req, res) => {
     try {
         const query = `
             SELECT 
                 ph.*,
                 p.name as product_name,
-                p.description,
-                p.image,
                 p.status,
-                c.name as client_name
+                c.name as client_name,
+                ph.observacao,
+                ph.usuario
             FROM product_history ph
             LEFT JOIN products p ON ph.product_id = p.id
             LEFT JOIN clients c ON ph.client_id = c.id
@@ -443,71 +473,14 @@ app.get('/api/movimentacao/historico', async (req, res) => {
         res.status(500).json({ message: 'Erro ao buscar histórico de movimentações' });
     }
 });
-// Registrar movimentação
-app.post('/api/movimentacao/registrar', async (req, res) => {
-    console.log('Recebendo movimentação:', req.body);
-    const { client_id, product_id, entrada, saida } = req.body;
 
-    if (!client_id || !product_id || (entrada === 0 && saida === 0)) {
-        return res.status(400).json({ 
-            message: 'Cliente, produto e quantidade são obrigatórios' 
-        });
-    }
-
-    try {
-        // Busca produto atual
-        const [produto] = await pool.promise().query(
-            'SELECT * FROM products WHERE id = ? AND client_id = ?',
-            [product_id, client_id]
-        );
-
-        if (produto.length === 0) {
-            return res.status(404).json({ message: 'Produto não encontrado' });
-        }
-
-        const estoqueAtual = produto[0].stock;
-        const novoEstoque = estoqueAtual + entrada - saida;
-
-        if (novoEstoque < 0) {
-            return res.status(400).json({ 
-                message: 'Estoque insuficiente para esta movimentação' 
-            });
-        }
-
-        // Atualiza o estoque do produto
-        await pool.promise().query(
-            'UPDATE products SET stock = ?, status = ? WHERE id = ?',
-            [
-                novoEstoque,
-                novoEstoque <= produto[0].min_stock ? 'Baixo' : 'Normal',
-                product_id
-            ]
-        );
-
-        // Registra no histórico
-        const tipoAcao = entrada > 0 ? 'ENTRADA' : 'SAIDA';
-        await pool.promise().query(
-            'INSERT INTO product_history (product_id, client_id, action_type, old_stock, new_stock) VALUES (?, ?, ?, ?, ?)',
-            [product_id, client_id, tipoAcao, estoqueAtual, novoEstoque]
-        );
-
-        res.json({ 
-            message: 'Movimentação registrada com sucesso',
-            novoEstoque
-        });
-    } catch (error) {
-        console.error('Erro ao registrar movimentação:', error);
-        res.status(500).json({ message: 'Erro ao registrar movimentação' });
-    }
-});
-// Remover item do histórico
 app.delete('/api/movimentacao/historico/:id', async (req, res) => {
-    const historicoId = req.params.id;
-
+    const historyId = req.params.id;
+    
     try {
         const [result] = await pool.promise().query(
             'DELETE FROM product_history WHERE id = ?',
-            [historicoId]
+            [historyId]
         );
 
         if (result.affectedRows === 0) {
@@ -520,11 +493,79 @@ app.delete('/api/movimentacao/historico/:id', async (req, res) => {
         res.status(500).json({ message: 'Erro ao remover registro do histórico' });
     }
 });
+// Rota para buscar um item específico do histórico
+app.get('/api/movimentacao/historico/:id', async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                ph.*,
+                p.name as product_name,
+                p.status,
+                c.name as client_name,
+                ph.observacao,
+                ph.usuario
+            FROM product_history ph
+            LEFT JOIN products p ON ph.product_id = p.id
+            LEFT JOIN clients c ON ph.client_id = c.id
+            WHERE ph.id = ?
+        `;
+        
+        const [historico] = await pool.promise().query(query, [req.params.id]);
+        
+        if (historico.length === 0) {
+            return res.status(404).json({ message: 'Item do histórico não encontrado' });
+        }
+        
+        res.json(historico[0]);
+    } catch (error) {
+        console.error('Erro ao buscar item do histórico:', error);
+        res.status(500).json({ message: 'Erro ao buscar item do histórico' });
+    }
+});
 
-// Inicialização do servidor
-const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => {
-    console.log(`Servidor rodando em http://localhost:${PORT}`);
+// Rota para atualizar um item do histórico
+app.put('/api/movimentacao/historico/:id', async (req, res) => {
+    const { observacao, usuario } = req.body;
+    try {
+        const [result] = await pool.promise().query(
+            'UPDATE product_history SET observacao = ?, usuario = ? WHERE id = ?',
+            [observacao, usuario, req.params.id]
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Item do histórico não encontrado' });
+        }
+
+        res.json({ message: 'Histórico atualizado com sucesso' });
+    } catch (error) {
+        console.error('Erro ao atualizar histórico:', error);
+        res.status(500).json({ message: 'Erro ao atualizar histórico' });
+    }
+});
+
+// Rotas HTML (movidas para o final)
+app.get('/*.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', req.path));
+});
+
+app.get('/', (req, res) => {
+    res.redirect('index.html');
+});
+
+// Adicione estas rotas no server.js antes do app.listen
+
+// Listar clientes
+app.get('/api/client-list', async (req, res) => {
+    try {
+        const [clients] = await pool.promise().query('SELECT * FROM client_list');
+        res.json(clients);
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao buscar clientes' });
+    }
+});
+
+app.listen(21058, '0.0.0.0', () => {
+    console.log(`Servidor rodando na porta ${21058}`);
 });
 
 // Tratamento para encerramento limpo
