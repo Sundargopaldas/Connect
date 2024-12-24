@@ -1,0 +1,170 @@
+/* Estilos para Cadastro de Clientes */
+/* Reset universal */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    
+}
+
+body{
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+
+}
+
+
+.cliente-container {
+    width: 100%;
+    max-width: 600px; /* Um pouco mais largo que o form de login */
+    padding: 20px;
+    margin: 40px auto;
+}
+
+.cliente-form {
+    background: rgb(76, 174, 223);
+    padding: 40px 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    animation: fadeIn 0.5s ease-out;
+}
+
+.cliente-form h2 {
+    color: #080808;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+/* Grupos de Input para Cliente */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.form-group input[type="text"],
+.form-group input[type="file"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e1e1e1;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: border-color 0.3s ease;
+    outline: none;
+}
+
+.form-group input[type="text"]:focus {
+    border-color: #667eea;
+}
+
+/* Estilo específico para input de arquivo */
+.form-group input[type="file"] {
+    padding: 8px;
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
+
+/* Botões */
+.btn-container {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+button {
+    flex: 1;
+    padding: 14px;
+    background: linear-gradient(to right, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* Botão Voltar */
+.btn-voltar {
+    background: linear-gradient(to right, #ff6b6b, #ee5253);
+}
+
+/* Preview da Logo */
+.logo-preview {
+    width: 150px;
+    height: 150px;
+    margin: 10px auto;
+    border: 2px dashed #e1e1e1;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.logo-preview img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+    .cliente-container {
+        padding: 10px;
+    }
+
+    .cliente-form {
+        padding: 20px;
+    }
+
+    .cliente-form h2 {
+        font-size: 24px;
+    }
+
+    .btn-container {
+        flex-direction: column;
+    }
+}
+
+/* Animação de Carregamento */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mensagens de Validação */
+.error-message {
+    color: #dc3545;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.success-message {
+    color: #28a745;
+    font-size: 14px;
+    margin-top: 5px;
+}

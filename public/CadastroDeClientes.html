@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Cliente</title>
+    <link rel="stylesheet" href="CadastroDeClientes.css">
+</head>
+<body>
+    <div class="cliente-container">
+        <form id="clienteForm" class="cliente-form">
+            <h2>Cadastro de Cliente</h2>
+
+            <div class="form-group">
+                <label for="idCliente">ID do Cliente:</label>
+                <input type="text" id="idCliente" name="idCliente" required>
+            </div>
+
+            <div class="form-group">
+                <label for="nomeCliente">Nome do Cliente:</label>
+                <input type="text" id="nomeCliente" name="nomeCliente" required>
+            </div>
+
+            <div class="form-group">
+                <label for="logoCliente">Logo do Cliente:</label>
+                <input type="file" id="logoCliente" name="logoCliente" accept="image/*">
+                <div id="logoPreview" class="logo-preview">
+                    <!-- Preview da imagem será inserido aqui via JavaScript -->
+                </div>
+            </div>
+
+            <div class="btn-container">
+                <button type="submit">Cadastrar Cliente</button>
+                <button type="button" class="btn-voltar" onclick="window.location.href='PaginaDadosClientes.html'">Voltar</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="CadastroDeClientes.js"></script>
+</body>
+</html>

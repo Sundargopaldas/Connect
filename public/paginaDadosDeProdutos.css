@@ -1,0 +1,349 @@
+/* Estilos para a página de produtos */
+body{
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.produtos-container {
+    width: 95%;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+    
+}
+
+.produtos-content {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    background: rgb(76, 174, 223);
+}
+
+.table-container {
+    overflow-x: auto;
+    margin: 20px 0;
+    background: rgb(76, 174, 223);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    background: rgb(76, 174, 223);
+}
+
+th {
+    background: #f8f9fa;
+    color: #333;
+    font-weight: 600;
+    text-align: left;
+    padding: 12px;
+    border-bottom: 2px solid #dee2e6;
+    background: rgb(76, 174, 223);
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #dee2e6;
+    vertical-align: middle;
+}
+
+tr:hover {
+    background-color: #f8f9fa;
+}
+
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.status-badge.normal {
+    background-color: #28a745;
+    color: white;
+}
+
+.status-badge.baixo {
+    background-color: #dc3545;
+    color: white;
+}
+
+.button-container {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    justify-content: flex-end;
+    
+}
+
+.btn-add {
+    background: linear-gradient(to right, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-voltar {
+    background: linear-gradient(to right, #ff6b6b, #ee5253);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-add:hover, .btn-voltar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+.button-container {
+    margin: 20px 0;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 8px 16px;
+    background-color: #2f3241;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: linear-gradient(to right, #667eea, #764ba2);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+     background-color: #28b9cc;
+    margin: 2% auto; /* Reduzido de 5% para 2% */
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 800px; /* Aumentado para acomodar duas colunas */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Cria duas colunas */
+    gap: 15px; /* Espaço entre as colunas */
+}
+
+.form-group {
+    margin-bottom: 10px; /* Reduzido de 15px para 10px */
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 3px; /* Reduzido de 5px para 3px */
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 6px; /* Reduzido de 8px para 6px */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.form-buttons {
+    margin-top: 8px; /* Reduzido de 20px para 15px */
+    text-align: right;
+    
+}
+.btn-save{
+  cursor: pointer;
+    padding: 6px;
+    background: linear-gradient(to right, #3c33ec, #28b9cc);  
+}
+.btn-cancel{
+
+ cursor: pointer;
+ padding: 6px;
+background: linear-gradient(to right, #3c33ec, #28b9cc);
+}
+
+.btn-red {
+    margin-top: 5px;  /* pode ajustar este valor conforme necessário */
+}
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color:rgb(111, 168, 242); 
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 8px;
+    position: relative;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.form-group textarea {
+    min-height: 100px;
+}
+
+.btn-container {
+    text-align: right;
+    margin-top: 20px;
+}
+
+.btn-cancel {
+    padding: 8px 16px;
+    margin-right: 10px;
+    background-color: #ccc;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Estilos para imagens */
+.product-image {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.image-preview {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-top: 5px;
+}
+
+/* Status badge */
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: white;
+}
+
+.status-badge.normal {
+    background-color: #44aa44;
+}
+
+.status-badge.baixo {
+    background-color: #ff4444;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Resto do CSS permanece igual
+
+
+.btn:hover {
+    background-color: #404459;
+}
+.btn-back{
+    background-color: #dc3545;
+    border: 0;
+    padding: 10px;
+    border-radius: 2 18px 0px;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .button-container {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .produtos-container {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .produtos-content {
+        padding: 15px;
+    }
+
+    .button-container {
+        flex-direction: column;
+    }
+
+    .btn-add, .btn-voltar {
+        width: 100%;
+    }
+}

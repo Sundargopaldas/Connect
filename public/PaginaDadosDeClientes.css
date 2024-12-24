@@ -1,0 +1,157 @@
+/* Reset universal */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.cliente-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  
+}
+
+.cliente-list {
+    background: white;
+    padding: 40px 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    animation: fadeIn 0.5s ease-out;
+    background-color: rgb(111, 168, 242); 
+}
+
+.cliente-list h2 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 28px;
+    font-weight: 600;
+    
+}
+
+/* Estilo para a lista de clientes */
+.dados-clientes {
+    margin-bottom: 30px;
+    background: rgb(164, 210, 233);
+}
+
+
+.cliente-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #e1e1e1;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cliente-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.cliente-item img {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-right: 15px;
+}
+
+.cliente-info {
+    flex: 1;
+    color: #333;
+}
+
+.cliente-info a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.cliente-info a:hover {
+    color: #764ba2;
+}
+
+/* Botões */
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.btn-novo {
+    padding: 14px 28px;
+    background: linear-gradient(to right, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-novo:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-delete {
+    padding: 8px 16px;
+    background: linear-gradient(to right, #ff6b6b, #ee5253);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.btn-delete:hover {
+    background: linear-gradient(to right, #ee5253, #ff6b6b);
+}
+
+/* Animação */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .cliente-container {
+        padding: 10px;
+    }
+
+    .cliente-list {
+        padding: 20px;
+    }
+
+    .cliente-item {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .cliente-item img {
+        margin: 0 0 10px 0;
+    }
+
+    .btn-delete {
+        margin: 10px 0 0 0;
+    }
+}

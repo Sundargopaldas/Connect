@@ -1,0 +1,280 @@
+/* Reset universal */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #7bcef5 0%, #5a9ee6 100%);
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    animation: fadeIn 0.5s ease-out;
+    
+}
+
+.title {
+    color: #333;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+/* Tabela responsiva */
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+     background: rgb(76, 174, 223);
+}
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e1e1e1;
+    font-size: 0.95rem;
+}
+
+th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #333;
+}
+
+tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Colunas específicas */
+.data-cliente { min-width: 200px; }
+.col-produto { width: 15%; }
+.col-id { width: 10%; }
+.col-descricao { width: 20%; }
+.col-img { width: 60px; }
+.col-numero { width: 8%; }
+.col-status { width: 10%; }
+.col-acao { width: 100px; }
+
+/* Botões */
+.button-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.btn-voltar {
+    padding: 12px 24px;
+    background: linear-gradient(to right, #ff6b6b, #ee5253);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    
+}
+
+.btn-voltar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+}
+
+.btn-red {
+    background: linear-gradient(to right, #dc3545, #c82333);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.btn-red:hover {
+    background: linear-gradient(to right, #c82333, #bd2130);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(220, 53, 69, 0.4);
+}
+
+/* Imagens */
+td img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Status badges */
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.status-badge.normal {
+    background-color: #28a745;
+    color: white;
+}
+
+.status-badge.baixo {
+    background-color: #dc3545;
+    color: white;
+}
+/* Adicione este CSS ao seu arquivo HistoricoDeMovimentacao.css existente */
+
+.btn-blue {
+    background: linear-gradient(to right, #007bff, #0056b3);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    margin-right: 8px;
+}
+
+.btn-blue:hover {
+    background: linear-gradient(to right, #0056b3, #004085);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0, 123, 255, 0.4);
+}
+
+
+
+/* Ajuste para a coluna de ação para acomodar dois botões */
+.col-acao { 
+    width: 160px; 
+}
+/* Cursor pointer para o botão fechar (X) */
+.close {
+    cursor: pointer;
+}
+
+/* Mesma largura para os botões de ação */
+.btn-blue, .btn-red {
+    width: 80px; /* ou qualquer largura que você preferir */
+    text-align: center;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+     background-color: #28b9cc;
+    margin: 2% auto; /* Reduzido de 5% para 2% */
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 800px; /* Aumentado para acomodar duas colunas */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Cria duas colunas */
+    gap: 15px; /* Espaço entre as colunas */
+}
+
+.form-group {
+    margin-bottom: 10px; /* Reduzido de 15px para 10px */
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 3px; /* Reduzido de 5px para 3px */
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 6px; /* Reduzido de 8px para 6px */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.form-buttons {
+    margin-top: 8px; /* Reduzido de 20px para 15px */
+    text-align: right;
+    
+}
+.btn-save{
+  cursor: pointer;
+    padding: 6px;
+    background: linear-gradient(to right, #3c33ec, #28b9cc);  
+}
+.btn-cancel{
+
+ cursor: pointer;
+ padding: 6px;
+background: linear-gradient(to right, #3c33ec, #28b9cc);
+}
+
+.btn-red {
+    margin-top: 5px;  /* pode ajustar este valor conforme necessário */
+}
+/* Resto do CSS permanece igual */
+/* Animação */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsividade */
+@media screen and (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    th, td {
+        padding: 8px 10px;
+        font-size: 0.85rem;
+    }
+
+    .title {
+        font-size: 24px;
+    }
+
+    .button-container {
+        justify-content: center;
+    }
+}

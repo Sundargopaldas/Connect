@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Movimentação</title>
+    <link rel="stylesheet" href="HistoricoDeMovimentacao.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Histórico De Movimentação</h1>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data/Cliente</th>
+                        <th>Produto</th>
+                        <th>ID</th>
+                        <th>Entrada</th>
+                        <th>Saída</th>
+                        <th>Estoque</th>
+                        <th>Status</th>
+                        <th>Observação</th>
+                        <th>usuário</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody id="historicoTableBody">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="button-container">
+            <button onclick="window.location.href='movimentacao.html'" class="btn-voltar">Voltar</button>
+        </div>
+    </div>
+
+    
+
+    <script src="HistoricoDeMovimentacao.js"></script>
+</body>
+</html>

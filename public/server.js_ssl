@@ -1,0 +1,80 @@
+const express = require('express');
+const https = require('https');
+const fs = require('fs');
+const cors = require('cors');
+const path = require('path');
+const mysql = require('mysql2');
+const app = express();
+// Configuração CORS
+app.use(cors({
+    origin: [
+        'https://connectprint.poa.br:21058',
+        'https://connectprint.poa.br',
+        'http://localhost:3001'  // Mantemos HTTP apenas para desenvolvimento
+    ],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Accept']
+}));
+// Middlewares
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true }));
+// Configuração para servir arquivos estáticos
+app.use(express.static(path.join(__dirname, 'public'), {
+    setHeaders: (res, path, stat) => {
+        if (path.endsWith('.css')) {
+            res.set('Content-Type', 'text/css');
+        } else if (path.endsWith('.js')) {
+            res.set('Content-Type', 'application/javascript');
+        }
+    }
+}));
+// Configuração do banco de dados
+const pool = mysql.createPool({
+    host: 'mysql.connectprint.poa.br',
+    user: 'connectprint',
+    password: 'Sundar2024',
+    database: 'connectprint',
+    port: 3306,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+});
+// Verificação inicial da conexão com o banco
+pool.getConnection((err, connection) => {
+    if (err) {
+        console.error('Erro de conexão com banco:', err);
+        console.error('Detalhes do erro:');
+        console.error('Código:', err.code);
+        console.error('Mensagem:', err.message);
+        console.error('Host:', pool.config.connectionConfig.host);
+        console.error('Usuário:', pool.config.connectionConfig.user);
+        console.error('Banco:', pool.config.connectionConfig.database);
+        return;
+    }
+    console.log('Conexão com banco estabelecida com sucesso!');
+    connection.release();
+});
+// Middleware para logging
+app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+    next();
+});
+// Rotas HTML
+app.get('/*.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', req.path));
+});
+app.get('/', (req, res) => {
+    res.redirect('index.html');
+});
+// Configuração do SSL
+const sslOptions = {
+    key: fs.readFileSync('certificado/private.key'),  // Substitua pelo caminho correto da sua chave privada
+    cert: fs.readFileSync('certificado/certificate.crt'), // Substitua pelo caminho correto do certificado
+    ca: fs.readFileSync('certificado/ca.crt') // Substitua pelo caminho correto do CA Bundle (opcional)
+};
+// Inicialização do servidor com SSL
+const PORT = 21058; // Porta HTTPS
+https.createServer(sslOptions, app).listen(PORT, () => {
+    console.log(`Servidor rodando com SSL na porta ${PORT}`);
+});
