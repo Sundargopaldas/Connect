@@ -13,19 +13,20 @@
         <div class="table-wrapper">
             <table>
                 <thead>
-                    <tr>
-                        <th>Data/Cliente</th>
-                        <th>Produto</th>
-                        <th>ID</th>
-                        <th>Entrada</th>
-                        <th>Saída</th>
-                        <th>Estoque</th>
-                        <th>Status</th>
-                        <th>Observação</th>
-                        <th>usuário</th>
-                        <th>Ação</th>
-                    </tr>
-                </thead>
+        <tr>
+            <th>data</th>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Nome</th>
+            <th>Descrição</th>
+            <th>Estoque</th>
+            <th>Estoque Mínimo</th>
+            <th>Status</th>
+            <th>Observação</th>
+            <th>Usuário</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
                 <tbody id="historicoTableBody">
                 </tbody>
             </table>
@@ -36,7 +37,69 @@
         </div>
     </div>
 
-    
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Editar Movimentação</h2>
+            <form id="editForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editData">Data:</label>
+                        <input type="datetime-local" id="editData" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCliente">Cliente:</label>
+                        <input type="text" id="editCliente" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editProduto">Produto:</label>
+                        <input type="text" id="editProduto" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editId">ID:</label>
+                        <input type="text" id="editId" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editMovimentacao">Tipo de Movimentação:</label>
+                        <select id="editMovimentacao" required>
+                            <option value="ENTRADA">Entrada</option>
+                            <option value="SAIDA">Saída</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editQuantidade">Quantidade:</label>
+                        <input type="number" id="editQuantidade" required min="0">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editEstoque">Estoque:</label>
+                        <input type="number" id="editEstoque" required min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="editStatus">Status:</label>
+                        <select id="editStatus" required>
+                            <option value="Normal">Normal</option>
+                            <option value="Crítico">Crítico</option>
+                            <option value="Baixo">Baixo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="button" class="btn-cancel">Cancelar</button>
+                    <button type="submit" class="btn-save">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script src="HistoricoDeMovimentacao.js"></script>
 </body>

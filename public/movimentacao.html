@@ -9,10 +9,9 @@
 <body>
     <div class="container">
         <h1 class="title">Movimentação</h1>
+        <a href="PaginaDadosClientes.html"><button class="btn-back">Voltar</button></a>
 
-        
-        <form id="movimentacaoForm">
-            
+        <form id="movimentacaoForm">  
             <div class="form-group">
                 <label for="cliente">Cliente:</label>
                 <select id="cliente" name="cliente" required>
@@ -20,7 +19,7 @@
                 </select>
                 <span id="clienteError" class="error"></span>
             </div>
-
+            
             <div class="form-group">
                 <label for="produto">Produto:</label>
                 <select id="produto" name="produto" required>
@@ -44,9 +43,12 @@
                     <span id="saidaError" class="error"></span>
                 </div>
             </div>
-            <label for="observacao">Observação:</label>
-               <textarea required id="observacao" name="observacao"rows="3" ></textarea>
-                
+
+            <div class="form-group">
+                <label for="observacao">Observação:</label>
+                <textarea id="observacao" name="observacao" rows="3" ></textarea>
+                <span id="observacaoError" class="error"></span>
+            </div>
 
             <button type="submit" class="btn-submit">Registrar Movimentação</button>
         </form>

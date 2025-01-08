@@ -94,7 +94,6 @@ input:focus, select:focus {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     margin-bottom: 20px;
     margin-left: 157px;
-    margin-top: 10px;
 }
 .btn-back{
  background: linear-gradient(to right, #ff6b6b, #ee5253);
@@ -132,9 +131,6 @@ input:focus, select:focus {
 .separator {
     margin: 0 10px;
     color: #666;
-}
-#observacao{
-    width: 300px;
 }
 
 @keyframes fadeIn {

@@ -31,69 +31,53 @@
                             <th>Ações</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="productTableBody">  <!-- Adicionando ID aqui -->
                         <!-- Dados serão inseridos via JavaScript -->
                     </tbody>
                 </table>
-                <div id="editModal" class="modal">
+            </div>
+
+            <div class="button-container">
+                <a href="CadastroDeProdutos.html"><button class="btn">Novo Produto</button></a>
+                <button onclick="window.location.href='PaginaDadosClientes.html'" class="btn-back">Voltar</button>
+            </div>
+        </div>
+        <div id="editModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <h2>Editar Produto</h2>
+        <h3>Editar Produto</h3>
         <form id="editForm">
             <div class="form-group">
                 <label for="editCliente">Cliente:</label>
                 <input type="text" id="editCliente" disabled>
             </div>
-
             <div class="form-group">
                 <label for="editId">ID:</label>
                 <input type="text" id="editId" disabled>
             </div>
-
-            <div class="form-group">
-                <label>Imagem atual:</label>
-                <div>
-                    <img id="editImagemPreview" src="placeholder.png" alt="Imagem do produto" 
-                         style="width: 100px; height: 100px; object-fit: cover; border-radius: 4px;">
-                </div>
-                <label for="editImagem">Nova imagem:</label>
-                <input type="file" id="editImagem" accept="image/*">
-            </div>
-
             <div class="form-group">
                 <label for="editProduto">Nome do Produto:</label>
                 <input type="text" id="editProduto" required>
             </div>
-
             <div class="form-group">
                 <label for="editDescricao">Descrição:</label>
                 <textarea id="editDescricao"></textarea>
             </div>
-
             <div class="form-group">
                 <label for="editEstoque">Estoque:</label>
-                <input type="number" id="editEstoque" required min="0">
+                <input type="number" id="editEstoque" required>
             </div>
-
             <div class="form-group">
                 <label for="editEstoqueMinimo">Estoque Mínimo:</label>
-                <input type="number" id="editEstoqueMinimo" required min="0">
+                <input type="number" id="editEstoqueMinimo" required>
             </div>
-
-            <div style="text-align: right; margin-top: 20px;">
+            <div class="form-buttons">
+                <button type="submit" class="btn-save">Salvar</button>
                 <button type="button" class="btn-cancel">Cancelar</button>
-                <button type="submit" class="btn-cancel">Salvar</button>
             </div>
         </form>
     </div>
 </div>
-            </div>
-
-            <div class="button-container">
-                <a href="CadastroDeProdutos.html"><button class="btn-add">Novo Produto</button></a>
-                <button onclick="window.location.href='PaginaDadosClientes.html'" class="btn-voltar">Voltar</button>
-            </div>
-        </div>
     </div>
 
     <script src="DadosDeProdutos.js"></script>

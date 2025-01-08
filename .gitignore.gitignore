@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Dependências
 node_modules/
 npm-debug.log
@@ -41,48 +40,4 @@ temp/
 # Arquivos de credenciais
 *.pem
 *.key
-=======
-# Dependências
-node_modules/
-npm-debug.log
-yarn-debug.log
-yarn-error.log
-
-# Ambiente
-.env
-.env.local
-.env.*.local
-
-# Sistema
-.DS_Store
-Thumbs.db
-
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# IDEs e editores
-.idea/
-.vscode/
-*.swp
-*.swo
-*.swn
-*.bak
-
-# Arquivos de build
-dist/
-build/
-coverage/
-
-# Arquivos temporários
-tmp/
-temp/
-
-# Arquivos de credenciais
-*.pem
-*.key
->>>>>>> 20fda8206b51eb9ba8c85c9e33c1933aace16fde
 *.cert

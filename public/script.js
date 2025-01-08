@@ -31,15 +31,19 @@ document.addEventListener('DOMContentLoaded', function() {
                console.log('Resposta recebida:', response);
                const data = await response.json();
                console.log('Resposta do servidor:', data);
-if (response.ok) {
-    localStorage.setItem('username', data.username);
-    alert('Cadastro realizado com sucesso!');
-    window.location.href = 'index.html';
-} else {
-    alert(data.message || 'Erro ao realizar cadastro');
+
+               if (response.ok) {
+                   alert('Cadastro realizado com sucesso!');
+                   window.location.href = 'index.html';
+                   // Dentro do if(response.ok) do loginForm, adicione:
+        if (response.ok) {
+    
+    alert('Login bem-sucedido!');
+    window.location.href = 'PaginaDadosClientes.html';
 }
-               
-               
+               } else {
+                   alert(data.message || 'Erro ao realizar cadastro');
+               }
            } catch (error) {
                console.error('Erro detalhado:', error);
                alert('Erro ao conectar com o servidor');
@@ -79,13 +83,16 @@ if (response.ok) {
                console.log('Resposta do servidor:', data);
 
                if (response.ok) {
-                   localStorage.setItem('username', data.user.username);
-                   alert('Login bem-sucedido!');
-                   
-                   window.location.href = 'PaginaDadosClientes.html';
-               } else {
-                   alert(data.message || 'Erro ao fazer login');
-               }
+    localStorage.setItem('userData', JSON.stringify({
+        id: data.user.id,
+        username: data.user.username,
+        email: data.user.email
+    }));
+    alert('Login bem-sucedido!');
+    window.location.href = 'PaginaDadosClientes.html';
+} else {
+    alert(data.message || 'Erro ao fazer login');
+}
            } catch (error) {
                console.error('Erro detalhado:', error);
                alert('Erro ao conectar com o servidor');
