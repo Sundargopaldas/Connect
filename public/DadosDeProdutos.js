@@ -4,6 +4,105 @@ document.addEventListener('DOMContentLoaded', function() {
     const clienteId = urlParams.get('clienteId');
     let clientData = null;
 
+    // Configuração do Modal
+    const modal = document.getElementById('editModal');
+    const closeBtn = modal.querySelector('.close');
+    const cancelBtn = modal.querySelector('.btn-cancel');
+    const editForm = document.getElementById('editForm');
+
+    // Função para fechar o modal
+    function closeModal() {
+        modal.style.display = 'none';
+        // Limpar o formulário
+        if (editForm) {
+            editForm.reset();
+            const previewImage = document.getElementById('previewImage');
+            if (previewImage) {
+                previewImage.src = 'placeholder.png';
+            }
+        }
+    }
+
+    // Event listeners do modal
+    if (closeBtn) {
+        closeBtn.onclick = closeModal;
+    }
+
+    if (cancelBtn) {
+        cancelBtn.onclick = closeModal;
+    }
+
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            closeModal();
+        }
+    };
+
+    // Configuração do formulário
+    if (editForm) {
+        editForm.onsubmit = async function(e) {
+            e.preventDefault();
+            
+            try {
+                const productId = this.dataset.productId;
+                
+                // Campos do formulário
+                const editProduto = document.getElementById('editProduto');
+                const editDescricao = document.getElementById('editDescricao');
+                const editEstoque = document.getElementById('editEstoque');
+                const editEstoqueMinimo = document.getElementById('editEstoqueMinimo');
+                const editImagem = document.getElementById('editImagem');
+
+                // Verificar campos obrigatórios
+                if (!editProduto || !editDescricao || !editEstoque || !editEstoqueMinimo) {
+                    throw new Error('Campos do formulário não encontrados');
+                }
+
+                // Preparar dados do produto
+                const updatedData = {
+                    client_id: clienteId,
+                    name: editProduto.value,
+                    description: editDescricao.value,
+                    stock: parseInt(editEstoque.value) || 0,
+                    min_stock: parseInt(editEstoqueMinimo.value) || 0
+                };
+
+                // Adicionar imagem se foi selecionada
+                if (editImagem && editImagem.files[0]) {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(editImagem.files[0]);
+                    await new Promise((resolve, reject) => {
+                        reader.onload = () => {
+                            updatedData.image = reader.result;
+                            resolve();
+                        };
+                        reader.onerror = reject;
+                    });
+                }
+
+                const response = await fetch(`${API_URL}/api/products/${productId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(updatedData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erro ao atualizar produto: ${response.status}`);
+                }
+
+                showSuccess('Produto atualizado com sucesso!');
+                closeModal();
+                await loadProducts();
+            } catch (error) {
+                console.error('Erro ao atualizar:', error);
+                showError('Erro ao atualizar produto: ' + error.message);
+            }
+        };
+    }
+
     async function parseJsonResponse(response) {
         try {
             return await response.json();
@@ -61,94 +160,94 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function loadProducts() {
-    try {
-        console.log('Iniciando carregamento dos produtos');
-        const response = await fetch(`${API_URL}/api/products`, {
-            headers: {
-                'Accept': 'application/json'
-            }
-        });
-        
-        if (!response.ok) {
-            throw new Error('Erro ao carregar produtos do servidor');
-        }
-
-        const allProducts = await parseJsonResponse(response);
-        const products = allProducts.filter(product => 
-            String(product.client_id) === String(clienteId) || 
-            String(product.clientId) === String(clienteId)
-        );
-        
-        const tbody = document.querySelector('#productTable tbody');
-        if (!tbody) {
-            throw new Error('Elemento tbody não encontrado');
-        }
-
-        tbody.innerHTML = '';
-
-        if (products.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="9" class="text-center">Nenhum produto encontrado para este cliente</td></tr>';
-            return;
-        }
-
-        products.forEach(product => {
-            const tr = document.createElement('tr');
-            tr.style.height = '60px'; // Altura fixa para as linhas
-            tr.innerHTML = `
-                <td style="width: 60px; text-align: center;">
-                    <img src="${product.image || 'placeholder.png'}" 
-                         alt="Imagem do produto"
-                         style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px; vertical-align: middle;"
-                         onerror="this.src='placeholder.png'">
-                </td>
-                <td style="width: 100px;">${escapeHtml(product.id || 'N/A')}</td>
-                <td style="width: 150px;">${escapeHtml(clientData.name || 'N/A')}</td>
-                <td style="width: 150px;">${escapeHtml(product.name || 'N/A')}</td>
-                <td style="width: 200px;">${escapeHtml(product.description || '-')}</td>
-                <td style="width: 100px; text-align: center;">${product.stock ?? 'N/A'}</td>
-                <td style="width: 100px; text-align: center;">${product.min_stock ?? 'N/A'}</td>
-                <td style="width: 100px; text-align: center;">
-                    <span class="status-badge ${(product.status || 'Normal').toLowerCase()}"
-                          style="padding: 4px 8px; border-radius: 4px; background-color: ${product.status === 'Baixo' ? '#ff4444' : '#44aa44'}; color: white;">
-                        ${escapeHtml(product.status || 'Normal')}
-                    </span>
-                <td style="width: 200px; text-align: center; padding: 10px 0;">
-    <div style="display: flex; justify-content: center; gap: 15px;">
-        <button class="btn-blue edit-btn" data-id="${product.id}" 
-                style="padding: 6px 12px; background-color: #0066cc; color: white; border: none; border-radius: 4px; cursor: pointer; width: 80px;">
-            Editar
-        </button>
-        <button class="remove-btn" data-id="${product.id}"
-                style="padding: 6px 12px; background-color: #ff4444; color: white; border: none; border-radius: 4px; cursor: pointer; width: 80px;">
-            Remover
-        </button>
-    </div>
-</td>
-                </td>
-            `;
-            tbody.appendChild(tr);
-        });
-
-        document.querySelectorAll('.edit-btn, .remove-btn').forEach(button => {
-            const productId = button.getAttribute('data-id');
-            if (productId) {
-                if (button.classList.contains('edit-btn')) {
-                    button.onclick = () => editProduct(productId);
-                } else {
-                    button.onclick = () => removeProduct(productId);
+        try {
+            console.log('Iniciando carregamento dos produtos');
+            const response = await fetch(`${API_URL}/api/products`, {
+                headers: {
+                    'Accept': 'application/json'
                 }
+            });
+            
+            if (!response.ok) {
+                throw new Error('Erro ao carregar produtos do servidor');
             }
-        });
 
-    } catch (error) {
-    console.error('Erro:', error);
-    const tbody = document.querySelector('#productTable tbody');
-    if (tbody) {
-        tbody.innerHTML = '<tr><td colspan="9" class="text-center">Erro ao carregar produtos: ' + error.message + '</td></tr>';
+            const allProducts = await parseJsonResponse(response);
+            const products = allProducts.filter(product => 
+                String(product.client_id) === String(clienteId) || 
+                String(product.clientId) === String(clienteId)
+            );
+            
+            const tbody = document.querySelector('#productTable tbody');
+            if (!tbody) {
+                throw new Error('Elemento tbody não encontrado');
+            }
+
+            tbody.innerHTML = '';
+
+            if (products.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="text-center">Nenhum produto encontrado para este cliente</td></tr>';
+                return;
+            }
+
+            products.forEach(product => {
+                const tr = document.createElement('tr');
+                tr.style.height = '60px';
+                tr.innerHTML = `
+                    <td style="width: 60px; text-align: center;">
+                        <img src="${product.image || 'placeholder.png'}" 
+                             alt="Imagem do produto"
+                             style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px; vertical-align: middle;"
+                             onerror="this.src='placeholder.png'">
+                    </td>
+                    <td style="width: 100px;">${escapeHtml(product.id || 'N/A')}</td>
+                    <td style="width: 150px;">${escapeHtml(clientData.name || 'N/A')}</td>
+                    <td style="width: 150px;">${escapeHtml(product.name || 'N/A')}</td>
+                    <td style="width: 200px;">${escapeHtml(product.description || '-')}</td>
+                    <td style="width: 100px; text-align: center;">${product.stock ?? 'N/A'}</td>
+                    <td style="width: 100px; text-align: center;">${product.min_stock ?? 'N/A'}</td>
+                    <td style="width: 100px; text-align: center;">
+                        <span class="status-badge ${(product.status || 'Normal').toLowerCase()}"
+                              style="padding: 4px 8px; border-radius: 4px; background-color: ${product.status === 'Baixo' ? '#ff4444' : '#44aa44'}; color: white;">
+                            ${escapeHtml(product.status || 'Normal')}
+                        </span>
+                    </td>
+                    <td style="width: 200px; text-align: center; padding: 10px 0;">
+                        <div style="display: flex; justify-content: center; gap: 15px;">
+                            <button class="btn-blue edit-btn" data-id="${product.id}" 
+                                    style="padding: 6px 12px; background-color: #0066cc; color: white; border: none; border-radius: 4px; cursor: pointer; width: 80px;">
+                                Editar
+                            </button>
+                            <button class="remove-btn" data-id="${product.id}"
+                                    style="padding: 6px 12px; background-color: #ff4444; color: white; border: none; border-radius: 4px; cursor: pointer; width: 80px;">
+                                Remover
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.querySelectorAll('.edit-btn, .remove-btn').forEach(button => {
+                const productId = button.getAttribute('data-id');
+                if (productId) {
+                    if (button.classList.contains('edit-btn')) {
+                        button.onclick = () => editProduct(productId);
+                    } else {
+                        button.onclick = () => removeProduct(productId);
+                    }
+                }
+            });
+
+        } catch (error) {
+            console.error('Erro:', error);
+            const tbody = document.querySelector('#productTable tbody');
+            if (tbody) {
+                tbody.innerHTML = '<tr><td colspan="9" class="text-center">Erro ao carregar produtos: ' + error.message + '</td></tr>';
+            }
+            showError('Erro ao carregar produtos: ' + error.message);
+        }
     }
-    showError('Erro ao carregar produtos: ' + error.message);
-    }
-}
 
     async function removeProduct(productId) {
         try {
@@ -178,125 +277,64 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function editProduct(productId) {
-    try {
-        console.log('Editando produto:', productId); // Debug
-        
-        const response = await fetch(`${API_URL}/api/products/${productId}`);
-        if (!response.ok) {
-            throw new Error(`Erro ao buscar dados do produto: ${response.status}`);
-        }
-        
-        const product = await response.json();
-        console.log('Dados do produto:', product); // Debug
-
-        // Verificar se os elementos existem antes de definir os valores
-        const editCliente = document.getElementById('editCliente');
-        const editId = document.getElementById('editId');
-        const editProduto = document.getElementById('editProduto');
-        const editDescricao = document.getElementById('editDescricao');
-        const editEstoque = document.getElementById('editEstoque');
-        const editEstoqueMinimo = document.getElementById('editEstoqueMinimo');
-
-        if (editCliente) editCliente.value = clientData?.name || '';
-        if (editId) editId.value = product.id || '';
-        if (editProduto) editProduto.value = product.name || '';
-        if (editDescricao) editDescricao.value = product.description || '';
-        if (editEstoque) editEstoque.value = product.stock || 0;
-        if (editEstoqueMinimo) editEstoqueMinimo.value = product.min_stock || 0;
-        
-        const editForm = document.getElementById('editForm');
-        if (editForm) {
-            editForm.dataset.productId = productId;
-        }
-        
-        const modal = document.getElementById('editModal');
-        if (modal) {
-            modal.style.display = 'block';
-        } else {
-            throw new Error('Modal não encontrado');
-        }
-    } catch (error) {
-        console.error('Erro ao editar produto:', error);
-        showError('Erro ao editar produto: ' + error.message);
-    }
-}
-
-    const modal = document.getElementById('editModal');
-    if (modal) {
-        const span = modal.querySelector('.close');
-        const editForm = document.getElementById('editForm');
-        const btnCancel = modal.querySelector('.btn-cancel');
-
-        if (span) {
-            span.onclick = function() {
-                modal.style.display = 'none';
-            }
-        }
-
-        if (btnCancel) {
-            btnCancel.onclick = function() {
-                modal.style.display = 'none';
-            }
-        }
-
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = 'none';
-            }
-        }
-
-        if (editForm) {
-    editForm.onsubmit = async function(e) {
-        e.preventDefault();
-        
         try {
-            const productId = this.dataset.productId;
+            console.log('Editando produto:', productId);
             
-            // Verificar se os elementos existem antes de pegar os valores
+            const response = await fetch(`${API_URL}/api/products/${productId}`);
+            if (!response.ok) {
+                throw new Error(`Erro ao buscar dados do produto: ${response.status}`);
+            }
+            
+            const product = await response.json();
+            console.log('Dados do produto:', product);
+
+            // Elementos do formulário
+            const editCliente = document.getElementById('editCliente');
+            const editId = document.getElementById('editId');
             const editProduto = document.getElementById('editProduto');
             const editDescricao = document.getElementById('editDescricao');
             const editEstoque = document.getElementById('editEstoque');
             const editEstoqueMinimo = document.getElementById('editEstoqueMinimo');
+            const previewImage = document.getElementById('previewImage');
 
-            // Verificar se todos os campos necessários existem
-            if (!editProduto || !editDescricao || !editEstoque || !editEstoqueMinimo) {
-                throw new Error('Campos do formulário não encontrados');
+            // Preencher os campos
+            if (editCliente) editCliente.value = clientData?.name || '';
+            if (editId) editId.value = product.id || '';
+            if (editProduto) editProduto.value = product.name || '';
+            if (editDescricao) editDescricao.value = product.description || '';
+            if (editEstoque) editEstoque.value = product.stock || 0;
+            if (editEstoqueMinimo) editEstoqueMinimo.value = product.min_stock || 0;
+            if (previewImage) previewImage.src = product.image || 'placeholder.png';
+            
+            if (editForm) {
+                editForm.dataset.productId = productId;
             }
 
-            const updatedData = {
-                client_id: clienteId,
-                name: editProduto.value,
-                description: editDescricao.value,
-                stock: parseInt(editEstoque.value) || 0,
-                min_stock: parseInt(editEstoqueMinimo.value) || 0
-            };
-
-            const response = await fetch(`${API_URL}/api/products/${productId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify(updatedData)
-            });
-
-            if (!response.ok) {
-                throw new Error(`Erro ao atualizar produto: ${response.status}`);
+            // Preview da imagem
+            const editImagem = document.getElementById('editImagem');
+            if (editImagem) {
+                editImagem.onchange = function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            previewImage.src = e.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                };
             }
-
-            showSuccess('Produto atualizado com sucesso!');
-            modal.style.display = 'none';
-            await loadProducts();
+            
+            if (modal) {
+                modal.style.display = 'block';
+            } else {
+                throw new Error('Modal não encontrado');
+            }
         } catch (error) {
-            console.error('Erro ao atualizar:', error);
-            showError('Erro ao atualizar produto: ' + error.message);
+            console.error('Erro ao editar produto:', error);
+            showError('Erro ao editar produto: ' + error.message);
         }
-    };
-}
-                
-            }
-        
-    
+    }
 
     loadClientData();
 

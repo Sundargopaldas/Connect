@@ -1,24 +1,24 @@
-/* Estilos para a página de produtos */
-body{
+/* Reset e Estilos Globais */
+body {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
+/* Layout Principal */
 .produtos-container {
     width: 95%;
     max-width: 1200px;
     margin: 40px auto;
     padding: 20px;
-    
 }
 
 .produtos-content {
-    background: white;
+    background: rgb(76, 174, 223);
     padding: 30px;
     border-radius: 15px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-    background: rgb(76, 174, 223);
 }
 
+/* Tabela */
 .table-container {
     overflow-x: auto;
     margin: 20px 0;
@@ -28,18 +28,16 @@ body{
 table {
     width: 100%;
     border-collapse: collapse;
-    background: white;
     background: rgb(76, 174, 223);
 }
 
 th {
-    background: #f8f9fa;
+    background: rgb(76, 174, 223);
     color: #333;
     font-weight: 600;
     text-align: left;
     padding: 12px;
     border-bottom: 2px solid #dee2e6;
-    background: rgb(76, 174, 223);
 }
 
 td {
@@ -52,6 +50,7 @@ tr:hover {
     background-color: #f8f9fa;
 }
 
+/* Status Badge */
 .status-badge {
     padding: 6px 12px;
     border-radius: 20px;
@@ -69,50 +68,17 @@ tr:hover {
     color: white;
 }
 
+/* Botões */
 .button-container {
     display: flex;
     gap: 15px;
-    margin-top: 20px;
-    justify-content: flex-end;
-    
-}
-
-.btn-add {
-    background: linear-gradient(to right, #667eea, #764ba2);
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.btn-voltar {
-    background: linear-gradient(to right, #ff6b6b, #ee5253);
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.btn-add:hover, .btn-voltar:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
-.button-container {
     margin: 20px 0;
-    display: flex;
-    gap: 10px;
+    justify-content: flex-end;
     flex-wrap: wrap;
 }
 
 .btn {
     padding: 8px 16px;
-    background-color: #2f3241;
     color: white;
     border: none;
     border-radius: 4px;
@@ -124,8 +90,39 @@ tr:hover {
     background: linear-gradient(to right, #667eea, #764ba2);
 }
 
+.btn:hover {
+    background-color: #404459;
+}
 
-    .modal {
+.btn-add {
+    background: linear-gradient(to right, #667eea, #764ba2);
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.btn-voltar {
+    background: linear-gradient(to right, #ff6b6b, #ee5253);
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.btn-back {
+    background-color: #f44336;
+    border: 0;
+    padding: 10px;
+    border-radius: 2px 18px 0px;
+}
+
+.btn-add:hover, 
+.btn-voltar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Modal */
+.modal {
     display: none;
     position: fixed;
     top: 0;
@@ -133,16 +130,24 @@ tr:hover {
     width: 100%;
     height: 100%;
     background-color: rgba(0,0,0,0.5);
+    overflow-y: auto;
 }
 
 .modal-content {
     background-color: #3586bb;
-    margin: 7% auto;
+    margin: 2% auto;
     padding: 20px;
     border: 1px solid #888;
     width: 80%;
     max-width: 500px;
     border-radius: 8px;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-content h3 {
+    margin: 0 0 15px 0;
 }
 
 .close {
@@ -151,26 +156,31 @@ tr:hover {
     font-size: 28px;
 }
 
+/* Formulário */
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 12px;
+    padding: 0 5px;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 3px;
+    font-weight: bold;
+    color: #333;
 }
 
 .form-group input,
-.form-group textarea {
+.form-group textarea,
+.form-group select {
     width: 100%;
-    padding: 8px;
+    padding: 6px;
     border: 1px solid #ddd;
     border-radius: 4px;
 }
 
 .form-buttons {
+    margin-top: 8px;
     text-align: right;
-    margin-top: 20px;
 }
 
 .btn-save,
@@ -179,81 +189,43 @@ tr:hover {
     margin-left: 10px;
     border-radius: 4px;
     cursor: pointer;
-}
-
-.btn-save {
-    background-color: #4CAF50;
-    color: white;
     border: none;
-}
-
-.btn-cancel {
-    background-color: #f44336;
     color: white;
-    border: none;
+    background: linear-gradient(to right, #3c33ec, #28b9cc);
 }
 
-.form-group {
-    margin-bottom: 10px; /* Reduzido de 15px para 10px */
+/* Upload de Imagem */
+.image-upload-container {
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 15px;
+    border: 2px dashed #ccc;
 }
 
-.form-group label {
-    display: block;
-    margin-bottom: 3px; /* Reduzido de 5px para 3px */
-    font-weight: bold;
+.image-upload-container:hover {
+    border-color: #667eea;
+    transition: border-color 0.3s ease;
 }
 
-.form-group input,
-.form-group select {
+#previewImage {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background-color: #f8f9fa;
+}
+
+#editImagem {
     width: 100%;
-    padding: 6px; /* Reduzido de 8px para 6px */
+    padding: 8px;
+    margin-top: 10px;
+    background-color: #ffffff;
     border: 1px solid #ddd;
     border-radius: 4px;
-}
-
-.form-buttons {
-    margin-top: 8px; /* Reduzido de 20px para 15px */
-    text-align: right;
-    
-}
-.btn-save{
-  cursor: pointer;
-    padding: 6px;
-    background: linear-gradient(to right, #3c33ec, #28b9cc);  
-}
-.btn-cancel{
-
- cursor: pointer;
- padding: 6px;
-background: linear-gradient(to right, #3c33ec, #28b9cc);
-}
-
-.btn-red {
-    margin-top: 5px;  /* pode ajustar este valor conforme necessário */
-}
- 
-
-
-.btn:hover {
-    background-color: #404459;
-}
-.btn-back{
-    background-color: #f44336;
-    border: 0;
-    padding: 10px;
-    border-radius: 2 18px 0px;
-    cursor: pointer;
-}
-
-@media (max-width: 768px) {
-    .button-container {
-        flex-direction: column;
-    }
-    
-    .btn {
-        width: 100%;
-        text-align: center;
-    }
 }
 
 /* Responsividade */
@@ -271,7 +243,19 @@ background: linear-gradient(to right, #3c33ec, #28b9cc);
         flex-direction: column;
     }
 
-    .btn-add, .btn-voltar {
+    .btn,
+    .btn-add, 
+    .btn-voltar {
         width: 100%;
+        text-align: center;
+    }
+
+    .image-upload-container {
+        padding: 10px;
+    }
+
+    #previewImage {
+        width: 100px;
+        height: 100px;
     }
 }
